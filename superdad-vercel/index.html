@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Super Dad — Every home needs one.</title>
+<meta name="description" content="The GTA's modern home concierge. Cedar fences, stone patios, carpentry, plumbing, mounts, gardens. One crew. One quote. Done right." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --navy: #0B1426;
+    --navy-2: #142035;
+    --navy-3: #1E2C45;
+    --line: #2A3A55;
+    --beige: #F2E9D6;
+    --beige-2: #E8DCC2;
+    --beige-3: #FAF4E4;
+    --cedar: #C99A66;
+    --cedar-bright: #E0B27D;
+    --muted: #7A8AA5;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; background: var(--navy); }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--navy);
+    color: var(--beige);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.55;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--cedar); color: var(--navy); }
+  img { display: block; max-width: 100%; }
+
+  /* CURSOR */
+  .cursor {
+    position: fixed;
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--cedar);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease, background 0.3s ease;
+    mix-blend-mode: difference;
+  }
+  .cursor.is-hover {
+    width: 50px; height: 50px;
+    background: var(--cedar);
+    border-color: var(--cedar);
+  }
+  @media (hover: none) { .cursor { display: none; } }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 1.2rem; left: 1.2rem; right: 1.2rem;
+    z-index: 100;
+    padding: 0.85rem 1.2rem 0.85rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(11, 20, 38, 0.55);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(242, 233, 214, 0.08);
+    border-radius: 999px;
+    transition: all 0.4s ease;
+  }
+  nav.scrolled { background: rgba(11, 20, 38, 0.85); border-color: rgba(242, 233, 214, 0.12); }
+  .logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; color: var(--beige); }
+  .logo__mark { width: 32px; height: 32px; background: var(--cedar); color: var(--navy); border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 0.95rem; }
+  .logo__text { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em; }
+  .nav__links { display: flex; gap: 0.35rem; background: rgba(242, 233, 214, 0.04); border-radius: 999px; padding: 0.3rem; }
+  .nav__links a { color: var(--beige); text-decoration: none; font-size: 0.84rem; font-weight: 500; padding: 0.5rem 1rem; border-radius: 999px; transition: all 0.25s ease; opacity: 0.75; }
+  .nav__links a:hover { opacity: 1; background: rgba(242, 233, 214, 0.08); }
+  .nav__cta { background: var(--beige); color: var(--navy); padding: 0.7rem 1.3rem; border-radius: 999px; text-decoration: none; font-size: 0.84rem; font-weight: 600; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem; position: relative; overflow: hidden; }
+  .nav__cta::before { content: ''; position: absolute; inset: 0; background: var(--cedar); transform: translateY(100%); transition: transform 0.3s ease; }
+  .nav__cta:hover::before { transform: translateY(0); }
+  .nav__cta span { position: relative; z-index: 1; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+    padding: 6rem 2rem 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .hero__bg { position: absolute; inset: 0; z-index: 0; }
+  .hero__bg-img {
+    position: absolute;
+    inset: 0;
+    background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=2400&q=85&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.5;
+    filter: saturate(0.7) contrast(1.05) brightness(0.7);
+    transform: scale(1.05);
+    animation: heroZoom 30s ease-in-out infinite alternate;
+  }
+  @keyframes heroZoom {
+    0% { transform: scale(1.05); }
+    100% { transform: scale(1.15); }
+  }
+  .hero__bg-grad {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at top left, rgba(201,154,102,0.18) 0%, transparent 50%),
+      radial-gradient(ellipse at bottom right, rgba(11,20,38,0.4) 0%, transparent 50%),
+      linear-gradient(180deg, rgba(11,20,38,0.4) 0%, rgba(11,20,38,0.85) 70%, var(--navy) 100%);
+  }
+  .hero__top { position: absolute; top: 6rem; left: 2rem; right: 2rem; z-index: 2; display: flex; justify-content: space-between; align-items: flex-start; }
+  .hero__top-tag {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    padding: 0.5rem 1rem;
+    background: rgba(242, 233, 214, 0.05);
+    border: 1px solid rgba(242, 233, 214, 0.1);
+    border-radius: 999px;
+    backdrop-filter: blur(12px);
+    font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--beige); font-weight: 500;
+  }
+  .hero__top-tag .live-dot {
+    width: 6px; height: 6px; background: #6BCB77; border-radius: 50%;
+    box-shadow: 0 0 12px rgba(107, 203, 119, 0.8);
+    animation: livePulse 2s ease-in-out infinite;
+  }
+  @keyframes livePulse {
+    0%, 100% { opacity: 0.5; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.1); }
+  }
+  .hero__top-trust { display: flex; align-items: center; gap: 1.5rem; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--beige); opacity: 0.7; font-weight: 500; }
+  .hero__top-trust span:first-child { color: var(--cedar-bright); letter-spacing: 0.18em; }
+  .hero__content { position: relative; z-index: 2; max-width: 1500px; margin: 0 auto; width: 100%; }
+  .hero__title { font-size: clamp(3.5rem, 11vw, 11rem); line-height: 0.92; letter-spacing: -0.04em; color: var(--beige-3); margin-bottom: 2.5rem; font-weight: 700; }
+  .hero__title-line { display: block; overflow: hidden; }
+  .hero__title-line span { display: inline-block; transform: translateY(100%); animation: revealUp 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  .hero__title-line:nth-child(2) span { animation-delay: 0.1s; }
+  .hero__title-line:nth-child(3) span { animation-delay: 0.2s; }
+  .hero__title .accent { color: var(--cedar); }
+  @keyframes revealUp { to { transform: translateY(0); } }
+  .hero__bottom { display: flex; justify-content: space-between; align-items: flex-end; gap: 3rem; flex-wrap: wrap; opacity: 0; transform: translateY(20px); animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards; }
+  @keyframes fadeUp { to { opacity: 1; transform: none; } }
+  .hero__sub { font-size: 1.1rem; line-height: 1.6; max-width: 480px; opacity: 0.78; }
+
+  .hero__ctas { display: flex; gap: 0.8rem; align-items: center; }
+  .btn { text-decoration: none; font-weight: 600; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); display: inline-flex; align-items: center; gap: 0.6rem; cursor: pointer; border: none; font-family: inherit; font-size: 0.95rem; }
+  .btn--primary { background: var(--cedar); color: var(--navy); padding: 1.1rem 1.8rem; border-radius: 999px; position: relative; overflow: hidden; }
+  .btn--primary::before { content: ''; position: absolute; inset: 0; background: var(--beige); transform: scaleX(0); transform-origin: right; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+  .btn--primary:hover::before { transform: scaleX(1); transform-origin: left; }
+  .btn--primary span { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 0.6rem; }
+  .btn--primary .arrow { transition: transform 0.3s ease; }
+  .btn--primary:hover .arrow { transform: translateX(4px); }
+  .btn--ghost { color: var(--beige); padding: 1.05rem 1.7rem; border-radius: 999px; border: 1px solid rgba(242, 233, 214, 0.25); background: rgba(242, 233, 214, 0.04); backdrop-filter: blur(10px); }
+  .btn--ghost:hover { background: rgba(242, 233, 214, 0.1); border-color: rgba(242, 233, 214, 0.4); }
+
+  /* PHOTO STRIP */
+  .photo-strip { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0; overflow: hidden; }
+  .photo-strip__item { aspect-ratio: 4 / 5; position: relative; overflow: hidden; cursor: pointer; }
+  .photo-strip__item img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s cubic-bezier(0.16,1,0.3,1); filter: grayscale(25%) brightness(0.8); }
+  .photo-strip__item:hover img { transform: scale(1.1); filter: grayscale(0%) brightness(1); }
+  .photo-strip__item::after {
+    content: attr(data-label);
+    position: absolute; bottom: 1rem; left: 1rem;
+    color: var(--beige); font-size: 0.65rem;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    background: rgba(11,20,38,0.75); padding: 0.4rem 0.7rem; border-radius: 3px;
+    backdrop-filter: blur(8px); font-weight: 600;
+  }
+
+  /* MARQUEE */
+  .marquee { background: var(--navy-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); overflow: hidden; padding: 1.6rem 0; }
+  .marquee__track { display: flex; gap: 4rem; white-space: nowrap; animation: marqueeRoll 38s linear infinite; }
+  .marquee__item { font-size: 1.4rem; color: var(--beige); opacity: 0.85; display: inline-flex; align-items: center; gap: 1rem; font-weight: 600; letter-spacing: -0.01em; }
+  .marquee__item .accent { color: var(--cedar); }
+  .marquee__item .star { color: var(--cedar); font-size: 0.9rem; }
+  @keyframes marqueeRoll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* SECTION BASE */
+  section { padding: 7rem 2rem; position: relative; }
+  .container { max-width: 1500px; margin: 0 auto; }
+  .section__head { display: grid; grid-template-columns: 1fr 1.1fr; gap: 5rem; align-items: end; margin-bottom: 4rem; }
+  .section__head--center { grid-template-columns: 1fr; max-width: 900px; margin-left: auto; margin-right: auto; text-align: center; gap: 1.5rem; }
+  .section__label { display: inline-flex; align-items: center; gap: 0.7rem; font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--cedar); margin-bottom: 1.5rem; font-weight: 600; }
+  .section__label::before { content: ''; width: 30px; height: 1px; background: var(--cedar); }
+  .section__head--center .section__label { margin-left: auto; margin-right: auto; }
+  .section__title { font-size: clamp(2.4rem, 6vw, 5.5rem); line-height: 0.96; letter-spacing: -0.035em; color: var(--beige-3); font-weight: 700; }
+  .section__title .accent { color: var(--cedar); }
+  .section__lede { font-size: 1.05rem; line-height: 1.65; color: var(--beige); opacity: 0.72; max-width: 540px; }
+  .section__head--center .section__lede { max-width: 640px; margin: 0 auto; }
+
+  /* VALUES with bg photos */
+  #values { padding: 6rem 2rem; border-bottom: 1px solid var(--line); }
+  .values__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+  .value-card { background: var(--navy); padding: 2.5rem 2rem; transition: all 0.5s ease; cursor: pointer; position: relative; overflow: hidden; }
+  .value-card__bg { position: absolute; inset: 0; opacity: 0; transition: opacity 0.5s ease; }
+  .value-card__bg img { width: 100%; height: 100%; object-fit: cover; }
+  .value-card__bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(11,20,38,0.92), rgba(11,20,38,0.96)); }
+  .value-card:hover .value-card__bg { opacity: 1; }
+  .value-card > *:not(.value-card__bg) { position: relative; z-index: 1; }
+  .value-card__num { font-size: 0.72rem; color: var(--cedar); letter-spacing: 0.18em; margin-bottom: 2rem; font-weight: 600; }
+  .value-card__title { font-size: 1.9rem; line-height: 1.05; letter-spacing: -0.025em; margin-bottom: 1rem; font-weight: 700; }
+  .value-card__title .accent { color: var(--cedar); }
+  .value-card__body { font-size: 0.92rem; opacity: 0.7; line-height: 1.6; }
+
+  /* SERVICES */
+  #services { background: var(--beige); color: var(--navy); }
+  #services .section__title { color: var(--navy); }
+  #services .section__lede { color: var(--navy); opacity: 0.7; }
+  .services__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .service { background: var(--beige-3); border-radius: 6px; overflow: hidden; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; border: 1px solid rgba(11,20,38,0.08); }
+  .service:hover { transform: translateY(-6px); box-shadow: 0 20px 50px -15px rgba(11,20,38,0.25); }
+  .service__img { aspect-ratio: 16 / 10; overflow: hidden; position: relative; }
+  .service__img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.9s cubic-bezier(0.16,1,0.3,1); }
+  .service:hover .service__img img { transform: scale(1.08); }
+  .service__img-tag { position: absolute; top: 1rem; left: 1rem; background: var(--navy); color: var(--beige); padding: 0.4rem 0.8rem; border-radius: 999px; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 600; }
+  .service__body { padding: 1.8rem 1.6rem; }
+  .service__title { font-size: 1.45rem; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 0.8rem; font-weight: 700; }
+  .service__title .accent { color: var(--cedar); }
+  .service__items { list-style: none; font-size: 0.88rem; line-height: 1.7; opacity: 0.7; margin-bottom: 1.5rem; }
+  .service__items li::before { content: '— '; color: var(--cedar); font-weight: 600; }
+  .service__price-row { display: flex; justify-content: space-between; align-items: baseline; padding-top: 1.2rem; border-top: 1px solid rgba(11,20,38,0.1); }
+  .service__price-l { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.15em; opacity: 0.55; font-weight: 600; }
+  .service__price-v { font-size: 1.4rem; color: var(--cedar); font-weight: 700; letter-spacing: -0.01em; }
+  .service__price-v small { font-size: 0.65rem; opacity: 0.6; font-weight: 500; margin-left: 0.2rem; }
+
+  /* GALLERY MASONRY - big visual showcase */
+  #gallery { background: var(--navy); padding: 7rem 0; }
+  #gallery .container { padding: 0 2rem; }
+  .gallery__grid { display: grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: 180px; gap: 0.6rem; }
+  .gallery__item { position: relative; overflow: hidden; border-radius: 4px; cursor: pointer; }
+  .gallery__item img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s cubic-bezier(0.16,1,0.3,1); }
+  .gallery__item:hover img { transform: scale(1.08); }
+  .gallery__item-cap { position: absolute; bottom: 0; left: 0; right: 0; padding: 1.2rem 1rem 0.8rem; background: linear-gradient(180deg, transparent, rgba(11,20,38,0.9)); display: flex; align-items: end; gap: 0.6rem; opacity: 0; transition: opacity 0.4s ease; }
+  .gallery__item:hover .gallery__item-cap { opacity: 1; }
+  .gallery__item-cap h4 { font-size: 0.95rem; color: var(--beige); font-weight: 600; letter-spacing: -0.01em; }
+  .gallery__item-cap h4 .accent { color: var(--cedar); }
+  .gallery__item-cap small { font-size: 0.62rem; color: var(--cedar); text-transform: uppercase; letter-spacing: 0.14em; font-weight: 600; }
+  .g-w2 { grid-column: span 2; }
+  .g-w3 { grid-column: span 3; }
+  .g-h2 { grid-row: span 2; }
+
+  /* PORTFOLIO LARGE */
+  #portfolio { background: var(--navy); padding-top: 0; }
+  .portfolio__grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 220px; gap: 1rem; }
+  .portfolio__item { position: relative; border-radius: 6px; overflow: hidden; cursor: pointer; }
+  .portfolio__item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.9s cubic-bezier(0.16,1,0.3,1); }
+  .portfolio__item:hover img { transform: scale(1.08); }
+  .portfolio__item-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(11,20,38,0.9)); display: flex; align-items: flex-end; padding: 1.5rem; opacity: 0; transition: opacity 0.4s ease; }
+  .portfolio__item:hover .portfolio__item-overlay { opacity: 1; }
+  .portfolio__item-text { color: var(--beige); }
+  .portfolio__item-text h4 { font-size: 1.3rem; margin-bottom: 0.3rem; font-weight: 700; letter-spacing: -0.02em; }
+  .portfolio__item-text h4 .accent { color: var(--cedar); }
+  .portfolio__item-text small { font-size: 0.7rem; color: var(--cedar); letter-spacing: 0.15em; text-transform: uppercase; font-weight: 600; }
+  .p-tall { grid-row: span 2; }
+  .p-wide { grid-column: span 2; }
+  .p-big { grid-column: span 2; grid-row: span 2; }
+
+  /* SPLIT FEATURE — image+text alternating */
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; max-width: 1400px; margin: 0 auto 5rem; }
+  .split:last-child { margin-bottom: 0; }
+  .split--reverse .split__img { order: 2; }
+  .split__img { aspect-ratio: 4 / 5; border-radius: 8px; overflow: hidden; }
+  .split__img img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s cubic-bezier(0.16,1,0.3,1); }
+  .split:hover .split__img img { transform: scale(1.04); }
+  .split__body h3 { font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1; letter-spacing: -0.03em; margin-bottom: 1.5rem; font-weight: 700; color: var(--beige-3); }
+  .split__body h3 .accent { color: var(--cedar); }
+  .split__body p { font-size: 1.05rem; line-height: 1.6; opacity: 0.7; margin-bottom: 1.5rem; }
+  .split__meta { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+  .split__meta-l { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--cedar); font-weight: 600; margin-bottom: 0.3rem; }
+  .split__meta-v { font-size: 1.1rem; font-weight: 600; }
+
+  /* MANIFESTO */
+  #manifesto { background: var(--beige); color: var(--navy); padding: 10rem 2rem; text-align: center; position: relative; overflow: hidden; }
+  .manifesto__bg { position: absolute; inset: 0; opacity: 0.04; }
+  .manifesto__bg img { width: 100%; height: 100%; object-fit: cover; }
+  .manifesto__quote { position: relative; font-size: clamp(2.2rem, 5vw, 4.5rem); line-height: 1.15; letter-spacing: -0.03em; max-width: 1100px; margin: 0 auto; font-weight: 700; }
+  .manifesto__quote .accent { color: var(--cedar); }
+  .manifesto__sig { position: relative; margin-top: 3rem; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--navy); opacity: 0.5; font-weight: 600; }
+
+  /* PROCESS WITH PHOTOS */
+  #process { background: var(--navy); }
+  .process__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; }
+  .step { background: var(--navy-2); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; transition: all 0.4s ease; cursor: pointer; }
+  .step:hover { transform: translateY(-6px); border-color: var(--cedar); }
+  .step__img { aspect-ratio: 16 / 10; overflow: hidden; }
+  .step__img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.9s cubic-bezier(0.16,1,0.3,1); }
+  .step:hover .step__img img { transform: scale(1.08); }
+  .step__body { padding: 1.8rem 1.5rem; }
+  .step__num { font-size: 0.7rem; color: var(--cedar); letter-spacing: 0.2em; margin-bottom: 1.2rem; font-weight: 600; }
+  .step__title { font-size: 1.45rem; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 1rem; font-weight: 700; }
+  .step__title .accent { color: var(--cedar); }
+  .step__body p { font-size: 0.92rem; line-height: 1.6; opacity: 0.7; }
+
+  /* PRICING */
+  #pricing { background: var(--beige); color: var(--navy); }
+  #pricing .section__title { color: var(--navy); }
+  #pricing .section__lede { color: var(--navy); opacity: 0.7; }
+  .pricing__table { max-width: 1200px; margin: 0 auto; border-top: 1px solid var(--navy); border-bottom: 1px solid var(--navy); }
+  .pricing__row { display: grid; grid-template-columns: 0.5fr 2.3fr 0.8fr 1fr; gap: 1.5rem; padding: 1.6rem 1rem; border-bottom: 1px solid rgba(11,20,38,0.12); align-items: center; transition: all 0.3s ease; cursor: pointer; }
+  .pricing__row:last-child { border-bottom: none; }
+  .pricing__row:not(.pricing__row--head):hover { background: var(--beige-2); padding-left: 1.5rem; }
+  .pricing__row--head { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.18em; opacity: 0.55; padding: 1.2rem 1rem; font-weight: 600; }
+  .pricing__sku { font-size: 0.78rem; opacity: 0.55; font-weight: 600; letter-spacing: 0.05em; }
+  .pricing__job { font-size: 1.05rem; line-height: 1.2; font-weight: 600; letter-spacing: -0.01em; }
+  .pricing__job small { display: block; font-size: 0.82rem; opacity: 0.6; font-weight: 400; margin-top: 0.25rem; }
+  .pricing__time { font-size: 0.82rem; color: var(--cedar); font-weight: 600; }
+  .pricing__price { font-size: 1.5rem; text-align: right; color: var(--navy); font-weight: 700; letter-spacing: -0.01em; }
+  .pricing__note { text-align: center; margin-top: 2rem; font-size: 0.7rem; opacity: 0.5; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 500; }
+
+  /* REVIEWS */
+  #reviews { background: var(--navy); }
+  .reviews__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .review { background: var(--navy-2); border: 1px solid var(--line); border-radius: 6px; padding: 2.5rem 2rem; display: flex; flex-direction: column; gap: 1.5rem; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; }
+  .review:hover { transform: translateY(-6px); border-color: var(--cedar); background: var(--navy-3); }
+  .review__stars { color: var(--cedar); font-size: 0.95rem; letter-spacing: 0.25em; }
+  .review__text { font-size: 1.05rem; line-height: 1.55; flex-grow: 1; color: var(--beige-3); }
+  .review__author { padding-top: 1.2rem; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 1rem; }
+  .review__avatar { width: 44px; height: 44px; border-radius: 50%; overflow: hidden; flex-shrink: 0; }
+  .review__avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .review__author-text { flex: 1; }
+  .review__name { font-size: 0.95rem; font-weight: 600; letter-spacing: -0.01em; }
+  .review__hood { font-size: 0.7rem; color: var(--cedar); text-transform: uppercase; letter-spacing: 0.15em; font-weight: 600; margin-top: 0.2rem; }
+
+  /* COVERAGE */
+  .coverage { background: var(--beige); color: var(--navy); padding: 6rem 2rem; text-align: center; overflow: hidden; }
+  .coverage__l { font-size: 0.74rem; color: var(--cedar); letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 2.5rem; font-weight: 600; }
+  .coverage__cities { font-size: clamp(1.8rem, 4vw, 3.5rem); line-height: 1.35; color: var(--navy); max-width: 1400px; margin: 0 auto; letter-spacing: -0.03em; font-weight: 700; }
+  .coverage__cities span { opacity: 0.85; display: inline-block; transition: all 0.3s ease; cursor: pointer; }
+  .coverage__cities span:hover { color: var(--cedar); opacity: 1; transform: translateY(-3px); }
+  .coverage__cities .sep { color: var(--cedar); opacity: 0.4; margin: 0 0.5rem; }
+  .coverage__cities .sep:hover { transform: none; color: var(--cedar); }
+
+  /* BOOK */
+  #book { background: var(--navy); }
+  .book__grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 5rem; max-width: 1400px; margin: 0 auto; align-items: start; }
+  .book__copy h2 { font-size: clamp(2.4rem, 5vw, 4.5rem); line-height: 0.98; letter-spacing: -0.035em; margin-bottom: 2rem; color: var(--beige-3); font-weight: 700; }
+  .book__copy h2 .accent { color: var(--cedar); }
+  .book__copy p { font-size: 1.05rem; line-height: 1.6; opacity: 0.75; max-width: 480px; margin-bottom: 2.5rem; }
+  .book__contact { list-style: none; border-top: 1px solid var(--line); }
+  .book__contact li { border-bottom: 1px solid var(--line); padding: 1.2rem 0; display: flex; justify-content: space-between; align-items: baseline; transition: padding 0.3s ease; cursor: pointer; }
+  .book__contact li:hover { padding-left: 0.5rem; }
+  .book__contact-l { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; opacity: 0.55; font-weight: 600; }
+  .book__contact-v { font-size: 1rem; color: var(--beige-3); font-weight: 600; letter-spacing: -0.01em; }
+  form { background: var(--navy-2); border: 1px solid var(--line); padding: 3rem 2.5rem; border-radius: 6px; }
+  .form__field { margin-bottom: 1.6rem; }
+  .form__row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.6rem; }
+  .form__row .form__field { margin-bottom: 0; }
+  .form__field label { display: block; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--cedar); margin-bottom: 0.6rem; font-weight: 600; }
+  .form__field input, .form__field select, .form__field textarea { width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--line); color: var(--beige-3); font-family: inherit; font-size: 1rem; padding: 0.7rem 0; transition: border-color 0.3s ease; }
+  .form__field input:focus, .form__field select:focus, .form__field textarea:focus { outline: none; border-bottom-color: var(--cedar); }
+  .form__field input::placeholder, .form__field textarea::placeholder { color: rgba(242, 233, 214, 0.3); }
+  .form__field select { appearance: none; cursor: pointer; }
+  .form__field select option { background: var(--navy-2); color: var(--beige); }
+  .form__field textarea { resize: vertical; min-height: 90px; }
+  .form__submit { width: 100%; background: var(--cedar); color: var(--navy); border: none; padding: 1.2rem; font-family: inherit; font-size: 0.95rem; font-weight: 600; border-radius: 999px; cursor: pointer; margin-top: 1rem; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 0.6rem; position: relative; overflow: hidden; }
+  .form__submit::before { content: ''; position: absolute; inset: 0; background: var(--beige); transform: scaleX(0); transform-origin: right; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+  .form__submit:hover::before { transform: scaleX(1); transform-origin: left; }
+  .form__submit span { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 0.5rem; }
+  .form__legal { font-size: 0.68rem; color: rgba(242,233,214,0.4); margin-top: 1.2rem; text-align: center; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
+
+  /* CTA BANNER */
+  .cta-banner { position: relative; padding: 10rem 2rem; overflow: hidden; text-align: center; }
+  .cta-banner__bg { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1521783988139-89397d761dce?w=2400&q=85&auto=format&fit=crop'); background-size: cover; background-position: center; filter: brightness(0.35); z-index: 0; }
+  .cta-banner__content { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; }
+  .cta-banner__title { font-size: clamp(2.5rem, 6vw, 5rem); line-height: 0.95; letter-spacing: -0.035em; color: var(--beige-3); margin-bottom: 2rem; font-weight: 700; }
+  .cta-banner__title .accent { color: var(--cedar); }
+  .cta-banner__sub { font-size: 1.15rem; color: var(--beige); opacity: 0.8; margin-bottom: 2.5rem; max-width: 600px; margin-left: auto; margin-right: auto; }
+
+  /* FOOTER */
+  footer { background: var(--navy); color: var(--beige); padding: 5rem 2rem 2.5rem; border-top: 1px solid var(--line); }
+  .footer__head { max-width: 1500px; margin: 0 auto 5rem; text-align: center; }
+  .footer__big { font-size: clamp(3rem, 11vw, 11rem); line-height: 0.9; letter-spacing: -0.045em; color: var(--beige-3); font-weight: 800; }
+  .footer__big .accent { color: var(--cedar); }
+  .footer__grid { max-width: 1500px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 4rem; padding-top: 3rem; border-top: 1px solid var(--line); }
+  .footer__brand p { font-size: 1rem; opacity: 0.7; max-width: 320px; line-height: 1.55; }
+  .footer__col h4 { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--cedar); margin-bottom: 1.3rem; font-weight: 600; }
+  .footer__col ul { list-style: none; }
+  .footer__col li { margin-bottom: 0.7rem; font-size: 0.92rem; opacity: 0.75; }
+  .footer__col a { color: var(--beige); text-decoration: none; transition: color 0.25s ease; }
+  .footer__col a:hover { color: var(--cedar); }
+  .footer__bottom { max-width: 1500px; margin: 3rem auto 0; padding-top: 2rem; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; opacity: 0.5; font-weight: 500; }
+
+  /* REVEAL */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1); }
+  .reveal.in { opacity: 1; transform: none; }
+  .reveal.delay-1 { transition-delay: 0.08s; }
+  .reveal.delay-2 { transition-delay: 0.16s; }
+  .reveal.delay-3 { transition-delay: 0.24s; }
+
+  /* MOBILE */
+  @media (max-width: 900px) {
+    .cursor { display: none; }
+    nav { padding: 0.7rem 0.8rem 0.7rem 1.2rem; top: 0.8rem; left: 0.8rem; right: 0.8rem; }
+    .nav__links { display: none; }
+    .hero { padding: 5rem 1.2rem 2rem; }
+    .hero__top { top: 5rem; left: 1.2rem; right: 1.2rem; flex-direction: column; gap: 1rem; }
+    .hero__top-trust { gap: 0.8rem; flex-wrap: wrap; }
+    .hero__bottom { flex-direction: column; align-items: stretch; gap: 2rem; }
+    section { padding: 5rem 1.2rem; }
+    .section__head { grid-template-columns: 1fr; gap: 2rem; }
+    .photo-strip { grid-template-columns: repeat(3, 1fr); }
+    .photo-strip__item:nth-child(n+4) { display: none; }
+    .values__grid { grid-template-columns: 1fr 1fr; }
+    .services__grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .gallery__grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 140px; }
+    .g-w2, .g-w3 { grid-column: span 2; }
+    .g-h2 { grid-row: span 2; }
+    .portfolio__grid { grid-template-columns: 1fr 1fr; grid-auto-rows: 170px; }
+    .p-wide, .p-big { grid-column: span 2; }
+    .p-big { grid-row: span 1; }
+    .process__grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .split { grid-template-columns: 1fr; gap: 2rem; }
+    .split--reverse .split__img { order: 0; }
+    .pricing__row { grid-template-columns: 1.5fr 1fr; gap: 0.6rem; padding: 1.3rem 0.5rem; }
+    .pricing__row--head { display: none; }
+    .pricing__time, .pricing__sku { grid-column: 1 / -1; font-size: 0.7rem; }
+    .pricing__price { font-size: 1.4rem; }
+    .reviews__grid { grid-template-columns: 1fr; gap: 1rem; }
+    .book__grid { grid-template-columns: 1fr; gap: 3rem; }
+    .footer__grid { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+    .footer__bottom { flex-direction: column; gap: 0.6rem; text-align: center; }
+    .marquee__item { font-size: 1.1rem; }
+    .cta-banner { padding: 6rem 1.2rem; }
+  }
+  @media (max-width: 560px) {
+    .values__grid, .services__grid, .process__grid, .footer__grid { grid-template-columns: 1fr; }
+    .gallery__grid { grid-template-columns: 1fr; }
+    .g-w2, .g-w3, .g-h2 { grid-column: span 1; grid-row: span 1; }
+    .portfolio__grid { grid-template-columns: 1fr; grid-auto-rows: 220px; }
+    .p-wide, .p-big { grid-column: span 1; }
+    .hero__title { font-size: 3.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="logo">
+    <span class="logo__mark">S</span>
+    <span class="logo__text">Super Dad</span>
+  </a>
+  <div class="nav__links">
+    <a href="#services">Services</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#portfolio">Work</a>
+    <a href="#process">Process</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#book">Contact</a>
+  </div>
+  <a href="#book" class="nav__cta"><span>Get a Quote →</span></a>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero__bg">
+    <div class="hero__bg-img"></div>
+    <div class="hero__bg-grad"></div>
+  </div>
+  <div class="hero__top">
+    <div class="hero__top-tag"><span class="live-dot"></span>Booking · May 2026</div>
+    <div class="hero__top-trust">
+      <span>★ ★ ★ ★ ★</span>
+      <span>Toronto · Vaughan · Mississauga</span>
+    </div>
+  </div>
+  <div class="hero__content">
+    <h1 class="hero__title">
+      <span class="hero__title-line"><span>Every home</span></span>
+      <span class="hero__title-line"><span>needs a</span></span>
+      <span class="hero__title-line"><span class="accent">Super Dad.</span></span>
+    </h1>
+    <div class="hero__bottom">
+      <p class="hero__sub">Cedar fences. Stone patios. Carpentry, plumbing, mounts, gardens. One crew, one quote — no sub-contracting strangers into your home.</p>
+      <div class="hero__ctas">
+        <a href="#book" class="btn btn--primary"><span>Book a site visit <span class="arrow">→</span></span></a>
+        <a href="tel:+14165550199" class="btn btn--ghost">☏ &nbsp;(416) 555-0199</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- PHOTO STRIP (6 photos) -->
+<div class="photo-strip">
+  <div class="photo-strip__item" data-label="Cedar fences"><img src="https://images.unsplash.com/photo-1601055283742-8b27e81b5553?w=600&q=80&auto=format&fit=crop" alt="" /></div>
+  <div class="photo-strip__item" data-label="Stone patios"><img src="https://images.unsplash.com/photo-1591768793355-74d04bb6608f?w=600&q=80&auto=format&fit=crop" alt="" /></div>
+  <div class="photo-strip__item" data-label="Painting"><img src="https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=600&q=80&auto=format&fit=crop" alt="" /></div>
+  <div class="photo-strip__item" data-label="IKEA assembly"><img src="https://images.unsplash.com/photo-1581539250439-c96689b516dd?w=600&q=80&auto=format&fit=crop" alt="" /></div>
+  <div class="photo-strip__item" data-label="TV mounts"><img src="https://images.unsplash.com/photo-1593784991095-a205069470b6?w=600&q=80&auto=format&fit=crop" alt="" /></div>
+  <div class="photo-strip__item" data-label="Gardens"><img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&q=80&auto=format&fit=crop" alt="" /></div>
+</div>
+
+<!-- MARQUEE -->
+<div class="marquee">
+  <div class="marquee__track">
+    <div class="marquee__item"><span class="accent">Licensed & insured</span> <span class="star">✦</span></div>
+    <div class="marquee__item">Same-day quotes <span class="star">✦</span></div>
+    <div class="marquee__item"><span class="accent">90-day warranty</span> <span class="star">✦</span></div>
+    <div class="marquee__item">One crew, every job <span class="star">✦</span></div>
+    <div class="marquee__item"><span class="accent">Fixed-price</span> <span class="star">✦</span></div>
+    <div class="marquee__item">No sub-contracting <span class="star">✦</span></div>
+    <div class="marquee__item"><span class="accent">Licensed & insured</span> <span class="star">✦</span></div>
+    <div class="marquee__item">Same-day quotes <span class="star">✦</span></div>
+    <div class="marquee__item"><span class="accent">90-day warranty</span> <span class="star">✦</span></div>
+    <div class="marquee__item">One crew, every job <span class="star">✦</span></div>
+    <div class="marquee__item"><span class="accent">Fixed-price</span> <span class="star">✦</span></div>
+    <div class="marquee__item">No sub-contracting <span class="star">✦</span></div>
+  </div>
+</div>
+
+<!-- VALUES with hover bg images -->
+<section id="values">
+  <div class="container">
+    <div class="values__grid">
+      <div class="value-card reveal">
+        <div class="value-card__bg"><img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&q=80&auto=format&fit=crop" alt="" /></div>
+        <div class="value-card__num">— 01</div>
+        <h3 class="value-card__title">Shows <span class="accent">up.</span></h3>
+        <p class="value-card__body">Calls returned same-day. On-site within 48 hours. We send a name, a face, and an arrival window.</p>
+      </div>
+      <div class="value-card reveal delay-1">
+        <div class="value-card__bg"><img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=600&q=80&auto=format&fit=crop" alt="" /></div>
+        <div class="value-card__num">— 02</div>
+        <h3 class="value-card__title">One <span class="accent">crew.</span></h3>
+        <p class="value-card__body">Indoor repairs to backyard stone patios. Stop juggling three contractors for one weekend project.</p>
+      </div>
+      <div class="value-card reveal delay-2">
+        <div class="value-card__bg"><img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&q=80&auto=format&fit=crop" alt="" /></div>
+        <div class="value-card__num">— 03</div>
+        <h3 class="value-card__title">Fixed <span class="accent">price.</span></h3>
+        <p class="value-card__body">Quote first. No mid-job upcharges. No "found something extra" invoices waiting at the end.</p>
+      </div>
+      <div class="value-card reveal delay-3">
+        <div class="value-card__bg"><img src="https://images.unsplash.com/photo-1530268729831-4b0b9e170218?w=600&q=80&auto=format&fit=crop" alt="" /></div>
+        <div class="value-card__num">— 04</div>
+        <h3 class="value-card__title">Real <span class="accent">warranty.</span></h3>
+        <p class="value-card__body">90-day workmanship guarantee on everything we touch. Something off? We come back. No charge.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES with photos -->
+<section id="services">
+  <div class="container">
+    <div class="section__head">
+      <div class="reveal">
+        <div class="section__label">The Menu</div>
+        <h2 class="section__title">Anything in,<br>on, or <span class="accent">around</span><br>your home.</h2>
+      </div>
+      <p class="section__lede reveal delay-1">Nine trade categories, one team. We don't sub-contract — the carpenter who quotes your fence is the same carpenter who builds it.</p>
+    </div>
+    <div class="services__grid">
+      <article class="service reveal"><div class="service__img"><img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=800&q=80&auto=format&fit=crop" alt="" /><span class="service__img-tag">01 / Indoor</span></div><div class="service__body"><h3 class="service__title">Handyman <span class="accent">& repairs</span></h3><ul class="service__items"><li>Drywall, doors, locks</li><li>Caulking, weatherproofing</li><li>Smart home device setup</li><li>Touch-up paint & finishing</li></ul><div class="service__price-row"><span class="service__price-l">From</span><span class="service__price-v">$95<small>/hr</small></span></div></div></article>
+      <article class="service reveal delay-1"><div class="service__img"><img src="https://images.unsplash.com/photo-1593784991095-a205069470b6?w=800&q=80&auto=format&fit=crop" alt="" /><span class="service__img-tag">02 / Wall work</span></div><div class="service__body"><h3 class="service__title">TV & <span class="accent">wall art</span></h3><ul class="service__items"><li>TV mounts, cable conceal</li><li>Gallery walls & shelves</li><li>Mirrors & heavy fixtures</li><li>Picture-perfect levelling</li></ul><div class="service__price-row"><span class="service__price-l">Flat</span><span class="service__price-v">$120</span></div></div></article>
+      <article class="service reveal delay-2"><div class="service__img"><img src="https://images.unsplash.com/photo-1581539250439-c96689b516dd?w=800&q=80&auto=format&fit=crop" alt="" /><span class="service__img-tag">03 / Assembly</span></div><div class="service__body"><h3 class="service__title">IKEA & <span class="accent">furniture</span></h3><ul class="service__items"><li>Full flat-pack assembly</li><li>PAX, beds, kitchens</li><li>Office desks & storage</li><li>Cardboard hauled away</li></ul><div class="service__price-row"><span class="service__price-l">From</span><span class="service__price-v">$85<small>/pc</small></span></div></div></article>
+      <article class="service reveal"><div class="service__img"><img src="https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=800&q=80&auto=format&fit=crop" alt="" /><span class="service__img-tag">04 / Plumbing</span></div><div class="service__body"><h3 class="service__title">Plumbing <span class="accent">fixes</span></h3><ul class="service__items"><li>Faucet, sink, toilet</li><li>Garbage disposals</li><li>Showerhead & valves</li><li>Leak diagnosis</li></ul><div class="service__price-row"><span class="service__price-l">From</span><span class="service__price-v">$150</span></div></div></article>
+      <article class="service reveal delay-1"><div class="service__img"><img src="https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=800&q=80&auto=format&fit=crop" alt="" /><span class="service__img-tag">05 / Electrical</span></div><div class="service__body"><h3 class="service__title">Electrical <span class="accent">(light)</span></h3><ul class="service__items"><li>Fixtures & ceiling fans</li><li>Outlets, switches, dimmers</li><li>Smart switches & bells</li><li>Outdoor & motion lighting</li></ul><div class="service__price-row"><span class="service__price-l">From</span><span class="service__price-v">$135</span></div></div></article>
+      <article class="service reveal delay-2"><div class="service__img"><img src="https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=800&q=80&auto=format&fit=crop" alt="" /><span class="service__img-tag">06 / Painting</span></div><div class="service__body"><h3 class="service__title">Painting <span class="accent">& drywall</span></h3><ul class="service__items"><li>Rooms & accent walls</li><li>Trim, doors, cabinets</li><li>Drywall patch & finish</li><li>Exterior touch-ups</li></ul><div class="service__price-row"><span class="service__price-l">From</span><span class="service__price-v">$350<small>/rm</small></span></div></div></article>
+      <article class="service reveal"><div class="service__img"><img src="https://images.unsplash.com/photo-1601055283742-8b27e81b5553?w=800&q=80&auto=format&fit=crop" alt="" /><span class="service__img-tag">07 / Outdoor</span></div><div class="service__body"><h3 class="service__title">Cedar <span class="accent">fences & gates</span></h3><ul class="service__items"><li>Custom cedar & PT builds</li><li>Shadowbox, board-on-board</li><li>Colour stain & seal</li><li>Gates with premium hardware</li></ul><div class="service__price-row"><span class="service__price-l">From</span><span class="service__price-v">$125<small>/lf</small></span></div></div></article>
+      <article class="service reveal delay-1"><div class="service__img"><img src="https://images.unsplash.com/photo-1591768793355-74d04bb6608f?w=800&q=80&auto=format&fit=crop" alt="" /><span class="service__img-tag">08 / Hardscape</span></div><div class="service__body"><h3 class="service__title">Stone <span class="accent">& interlock</span></h3><ul class="service__items"><li>Interlock patios & paths</li><li>Natural stone, flagstone</li><li>Retaining walls & edging</li><li>Fire pits & seating</li></ul><div class="service__price-row"><span class="service__price-l">From</span><span class="service__price-v">$28<small>/sqft</small></span></div></div></article>
+      <article class="service reveal delay-2"><div class="service__img"><img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&q=80&auto=format&fit=crop" alt="" /><span class="service__img-tag">09 / Garden</span></div><div class="service__body"><h3 class="service__title">Gardens <span class="accent">& flowers</span></h3><ul class="service__items"><li>Flower beds & planting</li><li>Mulch, soil, seasonal</li><li>Hedge, lawn, weeding</li><li>Planter builds</li></ul><div class="service__price-row"><span class="service__price-l">From</span><span class="service__price-v">$180</span></div></div></article>
+    </div>
+  </div>
+</section>
+
+<!-- BIG GALLERY MASONRY (12 photos in 6-col masonry) -->
+<section id="gallery">
+  <div class="container">
+    <div class="section__head" style="margin-bottom: 3rem; padding: 0 2rem;">
+      <div class="reveal">
+        <div class="section__label">In the wild</div>
+        <h2 class="section__title">Recent <span class="accent">moments</span><br>from the crew.</h2>
+      </div>
+      <p class="section__lede reveal delay-1">Every shot is a finished job somewhere in the GTA. From small fix-ups to full backyard transformations — this is what showing up looks like.</p>
+    </div>
+    <div class="gallery__grid">
+      <div class="gallery__item g-w2 g-h2"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85&auto=format&fit=crop" alt="" /><div class="gallery__item-cap"><div><h4>Modern <span class="accent">backyard</span></h4><small>Vaughan</small></div></div></div>
+      <div class="gallery__item"><img src="https://images.unsplash.com/photo-1601055283742-8b27e81b5553?w=600&q=80&auto=format&fit=crop" alt="" /><div class="gallery__item-cap"><div><h4><span class="accent">Cedar</span> fence</h4><small>Mississauga</small></div></div></div>
+      <div class="gallery__item"><img src="https://images.unsplash.com/photo-1591768793355-74d04bb6608f?w=600&q=80&auto=format&fit=crop" alt="" /><div class="gallery__item-cap"><div><h4><span class="accent">Interlock</span> patio</h4><small>Markham</small></div></div></div>
+      <div class="gallery__item g-h2"><img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&q=80&auto=format&fit=crop" alt="" /><div class="gallery__item-cap"><div><h4>Garden <span class="accent">build</span></h4><small>Etobicoke</small></div></div></div>
+      <div class="gallery__item g-h2"><img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80&auto=format&fit=crop" alt="" /><div class="gallery__item-cap"><div><h4>Gallery <span class="accent">wall</span></h4><small>Leslieville</small></div></div></div>
+      <div class="gallery__item"><img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=600&q=80&auto=format&fit=crop" alt="" /><div class="gallery__item-cap"><div><h4>Kitchen <span class="accent">refresh</span></h4><small>Toronto</small></div></div></div>
+      <div class="gallery__item"><img src="https://images.unsplash.com/photo-1593784991095-a205069470b6?w=600&q=80&auto=format&fit=crop" alt="" /><div class="gallery__item-cap"><div><h4>TV <span class="accent">mount</span></h4><small>North York</small></div></div></div>
+      <div class="gallery__item g-w2"><img src="https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=1200&q=85&auto=format&fit=crop" alt="" /><div class="gallery__item-cap"><div><h4>Stone <span class="accent">walkway</span></h4><small>Richmond Hill</small></div></div></div>
+      <div class="gallery__item"><img src="https://images.unsplash.com/photo-1604754742629-3e5728249d73?w=600&q=80&auto=format&fit=crop" alt="" /><div class="gallery__item-cap"><div><h4>Flower <span class="accent">beds</span></h4><small>Oakville</small></div></div></div>
+      <div class="gallery__item"><img src="https://images.unsplash.com/photo-1581539250439-c96689b516dd?w=600&q=80&auto=format&fit=crop" alt="" /><div class="gallery__item-cap"><div><h4>IKEA <span class="accent">build</span></h4><small>High Park</small></div></div></div>
+      <div class="gallery__item"><img src="https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=600&q=80&auto=format&fit=crop" alt="" /><div class="gallery__item-cap"><div><h4>Accent <span class="accent">wall</span></h4><small>Scarborough</small></div></div></div>
+      <div class="gallery__item"><img src="https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=600&q=80&auto=format&fit=crop" alt="" /><div class="gallery__item-cap"><div><h4>Plumbing <span class="accent">fix</span></h4><small>Brampton</small></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SPLIT FEATURES (3 featured projects with photos) -->
+<section id="portfolio">
+  <div class="container">
+    <div class="section__head" style="margin-top: 5rem;">
+      <div class="reveal">
+        <div class="section__label">Featured Projects</div>
+        <h2 class="section__title">Built last week,<br>in your <span class="accent">neighbourhood.</span></h2>
+      </div>
+      <p class="section__lede reveal delay-1">Every project is custom — framed on-site, hand-selected materials, premium hardware. Real carpentry, the way it should look.</p>
+    </div>
+
+    <div class="split reveal">
+      <div class="split__img"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85&auto=format&fit=crop" alt="" /></div>
+      <div class="split__body">
+        <h3>Backyard <span class="accent">transformation.</span></h3>
+        <p>A tired lawn turned into a flagstone-and-cedar retreat. New shadowbox gate, custom planter boxes, ambient lighting, all done in five days. The kind of weekend reset that makes neighbours stop and ask.</p>
+        <div class="split__meta">
+          <div><div class="split__meta-l">Location</div><div class="split__meta-v">Vaughan, ON</div></div>
+          <div><div class="split__meta-l">Investment</div><div class="split__meta-v">$8,400</div></div>
+          <div><div class="split__meta-l">Time</div><div class="split__meta-v">5 days</div></div>
+          <div><div class="split__meta-l">Scope</div><div class="split__meta-v">Fence + patio + garden</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="split split--reverse reveal">
+      <div class="split__img"><img src="https://images.unsplash.com/photo-1591768793355-74d04bb6608f?w=1200&q=85&auto=format&fit=crop" alt="" /></div>
+      <div class="split__body">
+        <h3>Stone <span class="accent">patio install.</span></h3>
+        <p>320 square feet of natural flagstone, set to a proper gravel base with edge restraints. Replaced a cracked concrete pad that had buckled over three winters. Should last 25+ years with no maintenance.</p>
+        <div class="split__meta">
+          <div><div class="split__meta-l">Location</div><div class="split__meta-v">Markham, ON</div></div>
+          <div><div class="split__meta-l">Investment</div><div class="split__meta-v">$9,200</div></div>
+          <div><div class="split__meta-l">Time</div><div class="split__meta-v">3 days</div></div>
+          <div><div class="split__meta-l">Material</div><div class="split__meta-v">Natural flagstone</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="split reveal">
+      <div class="split__img"><img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=85&auto=format&fit=crop" alt="" /></div>
+      <div class="split__body">
+        <h3>Gallery wall <span class="accent">+ mount.</span></h3>
+        <p>9-piece gallery wall installed alongside a 75″ TV mount with hidden cable runs through the drywall. Levelled, anchored, perfectly spaced. Two hours start to finish, no holes left in the wrong places.</p>
+        <div class="split__meta">
+          <div><div class="split__meta-l">Location</div><div class="split__meta-v">Leslieville, Toronto</div></div>
+          <div><div class="split__meta-l">Investment</div><div class="split__meta-v">$340</div></div>
+          <div><div class="split__meta-l">Time</div><div class="split__meta-v">2 hours</div></div>
+          <div><div class="split__meta-l">Scope</div><div class="split__meta-v">9 pieces + TV mount</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section id="manifesto">
+  <div class="manifesto__bg"><img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=2400&q=85&auto=format&fit=crop" alt="" /></div>
+  <p class="manifesto__quote reveal">Most homes don't need a contractor.<br>They need <span class="accent">someone who shows up</span>,<br>knows their tools, and finishes what they started.</p>
+  <div class="manifesto__sig reveal delay-1">— The Super Dad Code · Toronto · 2026</div>
+</section>
+
+<!-- PROCESS WITH PHOTOS -->
+<section id="process">
+  <div class="container">
+    <div class="section__head">
+      <div class="reveal">
+        <div class="section__label">How it works</div>
+        <h2 class="section__title">Four steps.<br><span class="accent">That's it.</span></h2>
+      </div>
+      <p class="section__lede reveal delay-1">No five-page consultations. No gatekeeping forms. Tell us what you need — we'll quote it, schedule it, finish it, clean up after ourselves.</p>
+    </div>
+    <div class="process__grid">
+      <div class="step reveal"><div class="step__img"><img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&q=80&auto=format&fit=crop" alt="" /></div><div class="step__body"><div class="step__num">— Step 01</div><h3 class="step__title">Tell us <span class="accent">what</span></h3><p>Call, text, or fill the form. Send a photo if you have one — the more we see, the tighter the quote.</p></div></div>
+      <div class="step reveal delay-1"><div class="step__img"><img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&q=80&auto=format&fit=crop" alt="" /></div><div class="step__body"><div class="step__num">— Step 02</div><h3 class="step__title">Get a <span class="accent">quote</span></h3><p>Within an hour on business days. Flat price for the job, itemised so you know exactly what's included.</p></div></div>
+      <div class="step reveal delay-2"><div class="step__img"><img src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=600&q=80&auto=format&fit=crop" alt="" /></div><div class="step__body"><div class="step__num">— Step 03</div><h3 class="step__title">We book <span class="accent">the day</span></h3><p>Tight arrival windows, not 8-hour guesses. We text on our way and show up when promised.</p></div></div>
+      <div class="step reveal delay-3"><div class="step__img"><img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80&auto=format&fit=crop" alt="" /></div><div class="step__body"><div class="step__num">— Step 04</div><h3 class="step__title"><span class="accent">Done.</span> Day saved.</h3><p>Clean site when we leave. 90-day workmanship warranty. Pay only after you're happy.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="container">
+    <div class="section__head section__head--center">
+      <div class="reveal"><div class="section__label">Honest Pricing</div></div>
+      <h2 class="section__title reveal delay-1">Real numbers.<br><span class="accent">No "starting at" tricks.</span></h2>
+      <p class="section__lede reveal delay-2">Most GTA contractors hide their pricing. We don't. These are real flat-priced jobs we deliver every week.</p>
+    </div>
+    <div class="pricing__table reveal">
+      <div class="pricing__row pricing__row--head"><span>SKU</span><span>The job</span><span>Time</span><span style="text-align:right;">Flat price</span></div>
+      <div class="pricing__row"><span class="pricing__sku">SD-101</span><div><div class="pricing__job">TV mount up to 75″<small>Cable concealment included</small></div></div><span class="pricing__time">~ 60 min</span><span class="pricing__price">$120</span></div>
+      <div class="pricing__row"><span class="pricing__sku">SD-204</span><div><div class="pricing__job">IKEA assembly per piece<small>PAX, Malm, Hemnes, office</small></div></div><span class="pricing__time">1–3 hrs</span><span class="pricing__price">$85–220</span></div>
+      <div class="pricing__row"><span class="pricing__sku">SD-305</span><div><div class="pricing__job">Gallery wall · 5–10 pieces<small>Layout, level, anchor, hang</small></div></div><span class="pricing__time">~ 2 hrs</span><span class="pricing__price">$220</span></div>
+      <div class="pricing__row"><span class="pricing__sku">SD-410</span><div><div class="pricing__job">Faucet or toilet replacement<small>Supply lines & disposal included</small></div></div><span class="pricing__time">~ 1.5 hrs</span><span class="pricing__price">$185</span></div>
+      <div class="pricing__row"><span class="pricing__sku">SD-512</span><div><div class="pricing__job">Light fixture / ceiling fan<small>Existing wiring, standard ceiling</small></div></div><span class="pricing__time">~ 1 hr</span><span class="pricing__price">$165</span></div>
+      <div class="pricing__row"><span class="pricing__sku">SD-618</span><div><div class="pricing__job">Fence stain or paint per panel<small>Prep, sand, 2-coat finish</small></div></div><span class="pricing__time">—</span><span class="pricing__price">$45</span></div>
+      <div class="pricing__row"><span class="pricing__sku">SD-701</span><div><div class="pricing__job">Cedar fence per linear ft<small>6′ privacy · posts to frost depth</small></div></div><span class="pricing__time">—</span><span class="pricing__price">$125</span></div>
+      <div class="pricing__row"><span class="pricing__sku">SD-702</span><div><div class="pricing__job">Single cedar gate · installed<small>Frame, hardware, hung & latched</small></div></div><span class="pricing__time">~ 1 day</span><span class="pricing__price">$895</span></div>
+      <div class="pricing__row"><span class="pricing__sku">SD-802</span><div><div class="pricing__job">Interlock patio per sqft<small>Base, sand, paver, edge restraint</small></div></div><span class="pricing__time">—</span><span class="pricing__price">$28</span></div>
+    </div>
+    <p class="pricing__note">All prices exclude HST · Materials at cost or quoted upfront · Larger projects priced on-site</p>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="container">
+    <div class="section__head">
+      <div class="reveal">
+        <div class="section__label">Word on the street</div>
+        <h2 class="section__title">Neighbours <span class="accent">talk.</span><br>So do we.</h2>
+      </div>
+      <p class="section__lede reveal delay-1">Real reviews from real homes across the GTA. Toronto, Vaughan, Mississauga, Markham, Etobicoke — wherever you are, someone on your block has hired us.</p>
+    </div>
+    <div class="reviews__grid">
+      <article class="review reveal"><div class="review__stars">★ ★ ★ ★ ★</div><p class="review__text">"Booked them for a TV mount and ended up adding a gallery wall, smart lock, and fence stain the same week. One crew, one invoice. This is the energy I needed."</p><div class="review__author"><div class="review__avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80&auto=format&fit=crop" alt="" /></div><div class="review__author-text"><div class="review__name">Priya R.</div><div class="review__hood">Leslieville</div></div></div></article>
+      <article class="review reveal delay-1"><div class="review__stars">★ ★ ★ ★ ★</div><p class="review__text">"Our backyard was a swamp. They quoted a flagstone patio and cedar fence stain, finished both in five days. The quote was the final price — to the dollar."</p><div class="review__author"><div class="review__avatar"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80&auto=format&fit=crop" alt="" /></div><div class="review__author-text"><div class="review__name">Marc & Elena D.</div><div class="review__hood">Vaughan</div></div></div></article>
+      <article class="review reveal delay-2"><div class="review__stars">★ ★ ★ ★ ★</div><p class="review__text">"Three IKEA PAX boxes sat in my hallway for two months. Super Dad showed up 9am Saturday, done by 2pm, hauled the cardboard out. Worth every dollar."</p><div class="review__author"><div class="review__avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80&auto=format&fit=crop" alt="" /></div><div class="review__author-text"><div class="review__name">Jordan T.</div><div class="review__hood">High Park</div></div></div></article>
+    </div>
+  </div>
+</section>
+
+<!-- COVERAGE -->
+<section class="coverage">
+  <div class="coverage__l">— Serving the Greater Toronto Area —</div>
+  <div class="coverage__cities">
+    <span>Toronto</span><span class="sep">·</span>
+    <span>Vaughan</span><span class="sep">·</span>
+    <span>Mississauga</span><span class="sep">·</span>
+    <span>Markham</span><span class="sep">·</span>
+    <span>Etobicoke</span><span class="sep">·</span>
+    <span>Richmond Hill</span><span class="sep">·</span>
+    <span>North York</span><span class="sep">·</span>
+    <span>Oakville</span><span class="sep">·</span>
+    <span>Brampton</span><span class="sep">·</span>
+    <span>Scarborough</span>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-banner">
+  <div class="cta-banner__bg"></div>
+  <div class="cta-banner__content">
+    <div class="section__label reveal" style="justify-content: center;">Ready when you are</div>
+    <h2 class="cta-banner__title reveal delay-1">Your weekend<br>just got <span class="accent">easier.</span></h2>
+    <p class="cta-banner__sub reveal delay-2">Stop scrolling Kijiji. Book a real crew with a real phone number, a real warranty, and a real price.</p>
+    <div class="reveal delay-3" style="display: inline-block;">
+      <a href="#book" class="btn btn--primary"><span>Get a free quote <span class="arrow">→</span></span></a>
+    </div>
+  </div>
+</section>
+
+<!-- BOOK -->
+<section id="book">
+  <div class="book__grid">
+    <div class="book__copy">
+      <div class="section__label reveal">Get in touch</div>
+      <h2 class="reveal delay-1">Got a to-do list?<br><span class="accent">Send it over.</span></h2>
+      <p class="reveal delay-2">One form, one number, one team. Whether you need a fence stained next weekend or a backyard rebuilt by August — start here. We respond within the hour during business days.</p>
+      <ul class="book__contact reveal delay-3">
+        <li><span class="book__contact-l">Phone</span><span class="book__contact-v">(416) 555-0199</span></li>
+        <li><span class="book__contact-l">Text / WhatsApp</span><span class="book__contact-v">(416) 555-0199</span></li>
+        <li><span class="book__contact-l">Email</span><span class="book__contact-v">hello@superdad.ca</span></li>
+        <li><span class="book__contact-l">Hours</span><span class="book__contact-v">Mon–Sat · 8am–7pm</span></li>
+      </ul>
+    </div>
+    <form onsubmit="event.preventDefault(); alert('Thanks — we will be in touch within the hour.');" class="reveal delay-1">
+      <div class="form__row"><div class="form__field"><label for="fn">First name</label><input id="fn" type="text" placeholder="Jane" required /></div><div class="form__field"><label for="ln">Last name</label><input id="ln" type="text" placeholder="Doe" required /></div></div>
+      <div class="form__row"><div class="form__field"><label for="ph">Phone</label><input id="ph" type="tel" placeholder="(416) 000-0000" required /></div><div class="form__field"><label for="em">Email</label><input id="em" type="email" placeholder="jane@email.com" required /></div></div>
+      <div class="form__field"><label for="svc">What do you need?</label><select id="svc" required><option value="">Choose a service…</option><option>Handyman / general repairs</option><option>TV / wall art mounting</option><option>IKEA / furniture assembly</option><option>Plumbing fix</option><option>Electrical (light)</option><option>Painting / drywall</option><option>Cedar fence or gate</option><option>Stone patio / interlock</option><option>Gardens / flowers</option><option>Multi-job package</option><option>Not sure — let's chat</option></select></div>
+      <div class="form__field"><label for="addr">Address / postal code</label><input id="addr" type="text" placeholder="So we know if you're in our zone" /></div>
+      <div class="form__field"><label for="msg">Tell us about the job</label><textarea id="msg" placeholder="Photos welcome — we'll text you a link after submit."></textarea></div>
+      <button type="submit" class="form__submit"><span>Send it · Get a free quote →</span></button>
+      <p class="form__legal">Reply within 1 hr · Mon–Sat 8–7 · No spam, ever</p>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer__head"><div class="footer__big">Every home needs<br>a <span class="accent">Super Dad.</span></div></div>
+  <div class="footer__grid">
+    <div class="footer__brand"><p>Modern home services for homes across the Greater Toronto Area. One call. One crew. Done right.</p></div>
+    <div class="footer__col"><h4>Services</h4><ul><li><a href="#services">Handyman</a></li><li><a href="#services">Fences & gates</a></li><li><a href="#services">Stone & patios</a></li><li><a href="#services">IKEA assembly</a></li><li><a href="#services">Gardens</a></li></ul></div>
+    <div class="footer__col"><h4>Company</h4><ul><li><a href="#process">How it works</a></li><li><a href="#gallery">Gallery</a></li><li><a href="#portfolio">Recent work</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#reviews">Reviews</a></li><li><a href="#book">Contact</a></li></ul></div>
+    <div class="footer__col"><h4>Reach us</h4><ul><li>(416) 555-0199</li><li>hello@superdad.ca</li><li>Mon–Sat · 8am–7pm</li><li>Licensed & insured</li></ul></div>
+  </div>
+  <div class="footer__bottom"><span>© 2026 Super Dad Home Services Inc.</span><span>Toronto, Ontario · Built by Divan Group</span></div>
+</footer>
+
+<script>
+  const cursor = document.querySelector('.cursor');
+  let mouseX = 0, mouseY = 0, curX = 0, curY = 0;
+  document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+  function animateCursor() { curX += (mouseX - curX) * 0.18; curY += (mouseY - curY) * 0.18; cursor.style.left = curX + 'px'; cursor.style.top = curY + 'px'; requestAnimationFrame(animateCursor); }
+  animateCursor();
+  document.querySelectorAll('a, button, .service, .review, .step, .pricing__row, .portfolio__item, .value-card, .coverage__cities span, .photo-strip__item, .gallery__item, .split').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('is-hover'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('is-hover'));
+  });
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => { if (window.scrollY > 50) nav.classList.add('scrolled'); else nav.classList.remove('scrolled'); });
+  const io = new IntersectionObserver((entries) => { entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
